@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "estudiante": "Ana Pérez",
+    "email": "ana.perez@example.com",
+    "sala": "Sala Norte",
+    "fecha": "2026-06-06",
+    "turno": "Mañana",
+    "personas": 2
+  },
+  {
+    "id": 2,
+    "estudiante": "Carlos Gómez",
+    "email": "carlos.gomez@example.com",
+    "sala": "Sala Sur",
+    "fecha": "2026-06-07",
+    "turno": "Tarde",
+    "personas": 4
+  },
+  {
+    "id": 3,
+    "estudiante": "Lucía Martínez",
+    "email": "lucia.martinez@example.com",
+    "sala": "Sala Multimedia",
+    "fecha": "2026-06-08",
+    "turno": "Noche",
+    "personas": 5
+  }
+]

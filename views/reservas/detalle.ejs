@@ -1,0 +1,38 @@
+<main class="contenedor-detalle">
+    <div class="cabecera-pagina">
+        <h1>Detalle de Reserva</h1>
+        <a href="/reservas" class="boton">Volver al listado</a>
+    </div>
+
+    <article class="tarjeta-reserva">
+        <!-- Cabecera de la tarjeta: ID y Badge de Turno -->
+        <div class="reserva-cabecera">
+            <span class="reserva-id">RESERVA #<%= String(reserva.id).padStart(4, '0' ) %></span>
+            <span class="badge-turno" data-turno="<%= reserva.turno %>">
+                <%= reserva.turno %>
+            </span>
+        </div>
+
+        <!-- Nombre de la Sala -->
+        <h2 class="reserva-sala">
+            <%= reserva.sala %>
+        </h2>
+
+        <!-- Datos del Estudiante -->
+        <div class="reserva-estudiante">
+            <p class="nombre">
+                <%= reserva.estudiante %>
+            </p>
+            <p class="email">
+                <%= reserva.email %>
+            </p>
+        </div>
+
+        <!-- Detalles del Turno y Cupo -->
+        <div class="reserva-detalles">
+            <span class="reserva-fecha">📅 <%= reserva.fecha %></span>
+            <span class="reserva-personas">👥 <%= reserva.personas %>
+                    <%= reserva.personas===1 ? 'persona' : 'personas' %></span>
+        </div>
+    </article>
+</main>

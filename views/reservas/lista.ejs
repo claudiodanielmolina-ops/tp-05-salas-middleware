@@ -1,0 +1,58 @@
+<header class="cabecera-pagina">
+    <div>
+        <p class="etiqueta">SALAS DE ESTUDIO</p>
+        <h1>
+            <%= titulo %>
+        </h1>
+    </div>
+    <a class="boton" href="/reservas/nueva">Agregar reserva</a>
+</header>
+
+<% if (reservas.length===0) { %>
+    <div class="estado">
+        <p>No hay reservas para mostrar.</p>
+    </div>
+    <% } else { %>
+        <section class="grilla-reservas" aria-label="Reservas disponibles">
+            <% reservas.forEach((reserva)=> { %>
+                <article class="tarjeta-reserva">
+
+                    <!-- Cabecera de la tarjeta: ID y Badge de Turno -->
+                    <div class="reserva-cabecera">
+                        <span class="reserva-id">#<%= String(reserva.id).padStart(4, '0' ) %></span>
+                        <span class="badge-turno" data-turno="<%= reserva.turno %>">
+                            <%= reserva.turno %>
+                        </span>
+                    </div>
+
+                    <!-- Nombre de la Sala -->
+                    <h2 class="reserva-sala">
+                        <%= reserva.sala %>
+                    </h2>
+
+                    <!-- Información del Estudiante -->
+                    <div class="reserva-estudiante">
+                        <p class="nombre">
+                            <%= reserva.estudiante %>
+                        </p>
+                        <p class="email">
+                            <%= reserva.email %>
+                        </p>
+                    </div>
+
+                    <!-- Detalles de Fecha y Cantidad de Personas -->
+                    <div class="reserva-detalles">
+                        <span class="reserva-fecha">📅 <%= reserva.fecha %></span>
+                        <span class="reserva-personas">👥 <%= reserva.personas %></span>
+                    </div>
+
+                    <!-- Acción para ver el detalle -->
+                    <div style="margin-top: 1rem; text-align: right;">
+                        <a href="/reservas/<%= reserva.id %>" class="boton"
+                            style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Ver detalle →</a>
+                    </div>
+
+                </article>
+                <% }) %>
+        </section>
+        <% } %>

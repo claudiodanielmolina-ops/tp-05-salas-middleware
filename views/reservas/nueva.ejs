@@ -1,0 +1,46 @@
+<section class="panel-formulario">
+    <p class="etiqueta">NUEVA RESERVA</p>
+    <h1>
+        <%= titulo %>
+    </h1>
+
+    <% if (error) { %>
+        <p class="error" role="alert">
+            <%= error %>
+        </p>
+        <% } %>
+
+            <form action="/reservas" method="post" class="formulario">
+                <label for="estudiante">Estudiante</label>
+                <input id="estudiante" name="estudiante" type="text" value="<%= valores.estudiante ?? '' %>" required>
+
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" value="<%= valores.email ?? '' %>" required>
+
+                <label for="sala">Sala</label>
+                <select id="sala" name="sala" required>
+                    <option value="" disabled <%=!valores.sala ? 'selected' : '' %>>Seleccione una sala</option>
+                    <option value="Sala Norte" <%=valores.sala==='Sala Norte' ? 'selected' : '' %>>Sala Norte</option>
+                    <option value="Sala Sur" <%=valores.sala==='Sala Sur' ? 'selected' : '' %>>Sala Sur</option>
+                    <option value="Sala Multimedia" <%=valores.sala==='Sala Multimedia' ? 'selected' : '' %>>Sala
+                        Multimedia</option>
+                </select>
+
+                <label for="fecha">Fecha</label>
+                <input id="fecha" name="fecha" type="date" value="<%= valores.fecha ?? '' %>" required>
+
+                <label for="turno">Turno</label>
+                <select id="turno" name="turno" required>
+                    <option value="" disabled <%=!valores.turno ? 'selected' : '' %>>Seleccione un turno</option>
+                    <option value="Mañana" <%=valores.turno==='Mañana' ? 'selected' : '' %>>Mañana</option>
+                    <option value="Tarde" <%=valores.turno==='Tarde' ? 'selected' : '' %>>Tarde</option>
+                    <option value="Noche" <%=valores.turno==='Noche' ? 'selected' : '' %>>Noche</option>
+                </select>
+
+                <label for="personas">Personas (1 a 6)</label>
+                <input id="personas" name="personas" type="number" min="1" max="6" value="<%= valores.personas ?? '' %>"
+                    required>
+
+                <button type="submit">Guardar reserva</button>
+            </form>
+</section>
