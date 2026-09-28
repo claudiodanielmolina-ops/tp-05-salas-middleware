@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node --watch src/index.js",
-    "check": "node --check src/index.js && node --check src/archivos.js"
+    "start": "node src/index.js",
+    "check": "node --check src/index.js"
   },
   "keywords": [],
   "author": "",

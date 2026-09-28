@@ -1,9 +1,8 @@
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
-/* Se agrega esta línea de morgan */
 const morgan = require("morgan");
 const path = require("node:path");
-const { leerJson } = require("./archivos");
+const { leerJson } = require("./archivos"); 
 const PORT = 3000;
 const rutaDatos = path.join(__dirname, "..", "datos", "reservas.json");
 
@@ -14,6 +13,7 @@ function identificarSolicitud(req, res, next) {
     res.locals.solicitudId = `SOL-${String(numeroDeSolicitud).padStart(4, "0")}`;
     next();
 }
+
 function medirDuracion(req, res, next) {
     const inicio = process.hrtime.bigint();
     res.on("finish", () => {
@@ -28,27 +28,25 @@ function medirDuracion(req, res, next) {
 }
 
 function prepararReserva(req, res, next) {
-    res.locals.seccion = "Reservas de turnos";
+    res.locals.seccion = "Reservas de salas";
     next();
 }
 
-/* Defino el listado de salas permitidas */
 const salasPermitidas = ["Sala Norte", "Sala Sur", "Sala Multimedia"];
 
 function validarReserva(req, res, next) {
     const estudiante = String(req.body.estudiante ?? "").trim();
     const email = String(req.body.email ?? "").trim();
-    const sala = String(req.body.sala ?? "").trim(); // Variable renombrada a 'sala'
+    const sala = String(req.body.sala ?? "").trim();
     const fecha = String(req.body.fecha ?? "").trim();
     const turno = String(req.body.turno ?? "").trim();
     const personas = Number(req.body.personas);
 
     const turnosPermitidos = ["Mañana", "Tarde", "Noche"];
 
-    // Valido los campos vacíos, tipos de datos y opciones permitidas
     if (
         !estudiante ||
-        !email ||
+        !email.includes("@") ||
         !salasPermitidas.includes(sala) ||
         !fecha ||
         !turnosPermitidos.includes(turno) ||
@@ -72,11 +70,9 @@ async function main() {
     const app = express();
 
     function crearReserva(req, res) {
-        const ultimoId = reservas.reduce(
-            (mayorId, reservas) => Math.max(mayorId, reservas.id),
-            0,
-        );
-        reservas.push({ id: ultimoId + 1, ...req.reservaValidada });
+        const siguienteNumero = reservas.length + 1;
+        const nuevoId = `BIB-${String(siguienteNumero).padStart(4, "0")}`;
+        reservas.push({ id: nuevoId, ...req.reservaValidada });
         res.redirect("/reservas");
     }
 
@@ -88,15 +84,18 @@ async function main() {
     app.use(morgan("dev"));
     app.use(identificarSolicitud);
     app.use(medirDuracion);
-    app.use(expressLayouts);
 
     app.use(express.static(path.join(__dirname, "..", "public")));
     app.use(express.urlencoded({ extended: false }));
-
     app.use(express.json());
 
     app.get("/", (req, res) => {
         res.render("inicio", { titulo: "Reserva de turnos" });
+    });
+
+    // 1. Agregado el contrato HTTP GET /estado
+    app.get("/estado", (req, res) => {
+        res.json({ estado: "OK" });
     });
 
     app.get("/api/reservas", (req, res) => {
@@ -105,13 +104,13 @@ async function main() {
 
     const reservasRouter = express.Router();
     reservasRouter.use(prepararReserva);
+
     reservasRouter.get("/", (req, res) => {
         res.render("reservas/lista", {
             titulo: "Reservas de turnos",
             reservas,
         });
-    })
-
+    });
 
     reservasRouter.get("/nueva", (req, res) => {
         res.render("reservas/nueva", {
@@ -121,9 +120,9 @@ async function main() {
         });
     });
 
-    /* BLOQUE GET DE CÓDIGO CORREGIDO de reservas */
+    // 2. Búsqueda ajustada para identificadores en formato string (BIB-XXXX)
     reservasRouter.get("/:id", (req, res) => {
-        const id = Number(req.params.id);
+        const id = req.params.id;
         const reserva = reservas.find((elemento) => elemento.id === id);
         if (!reserva) {
             return res.status(404).render("no-encontrado", {
@@ -133,18 +132,20 @@ async function main() {
         }
         res.render("reservas/detalle", {
             titulo: reserva.estudiante,
-            reserva, // Se pasa la reserva encontrada a la vista
+            reserva,
         });
     });
 
     reservasRouter.post("/", validarReserva, crearReserva);
     app.use("/reservas", reservasRouter);
+
     app.use((req, res) => {
         res.status(404).render("no-encontrado", {
             titulo: "Página no encontrada",
             mensaje: "La dirección solicitada no existe.",
         });
     });
+
     app.listen(PORT, () => {
         console.log(`Aplicación disponible en http://localhost:${PORT}`);
     });
