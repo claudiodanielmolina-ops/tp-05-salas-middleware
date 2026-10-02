@@ -2,9 +2,48 @@ const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const morgan = require("morgan");
 const path = require("node:path");
-const { leerJson } = require("./archivos"); 
+
 const PORT = 3000;
-const rutaDatos = path.join(__dirname, "..", "datos", "reservas.json");
+
+// Definición directa de 4 reservas iniciales con formato BIB-XXXX
+const reservas = [
+    {
+        id: "BIB-0001",
+        estudiante: "Ana López",
+        email: "ana.lopez@example.com",
+        sala: "Sala Norte",
+        fecha: "2026-10-01",
+        turno: "Mañana",
+        personas: 2
+    },
+    {
+        id: "BIB-0002",
+        estudiante: "Carlos Pérez",
+        email: "carlos.perez@example.com",
+        sala: "Sala Sur",
+        fecha: "2026-10-02",
+        turno: "Tarde",
+        personas: 4
+    },
+    {
+        id: "BIB-0003",
+        estudiante: "María Gómez",
+        email: "maria.gomez@example.com",
+        sala: "Sala Multimedia",
+        fecha: "2026-10-03",
+        turno: "Noche",
+        personas: 3
+    },
+    {
+        id: "BIB-0004",
+        estudiante: "Juan Martínez",
+        email: "juan.martinez@example.com",
+        sala: "Sala Norte",
+        fecha: "2026-10-04",
+        turno: "Mañana",
+        personas: 1
+    }
+];
 
 let numeroDeSolicitud = 0;
 
@@ -46,6 +85,7 @@ function validarReserva(req, res, next) {
 
     if (
         !estudiante ||
+        !email ||
         !email.includes("@") ||
         !salasPermitidas.includes(sala) ||
         !fecha ||
@@ -65,8 +105,7 @@ function validarReserva(req, res, next) {
     next();
 }
 
-async function main() {
-    const reservas = await leerJson(rutaDatos);
+function main() {
     const app = express();
 
     function crearReserva(req, res) {
@@ -93,7 +132,6 @@ async function main() {
         res.render("inicio", { titulo: "Reserva de turnos" });
     });
 
-    // 1. Agregado el contrato HTTP GET /estado
     app.get("/estado", (req, res) => {
         res.json({ estado: "OK" });
     });
@@ -120,7 +158,6 @@ async function main() {
         });
     });
 
-    // 2. Búsqueda ajustada para identificadores en formato string (BIB-XXXX)
     reservasRouter.get("/:id", (req, res) => {
         const id = req.params.id;
         const reserva = reservas.find((elemento) => elemento.id === id);
@@ -151,7 +188,4 @@ async function main() {
     });
 }
 
-main().catch((error) => {
-    console.error("No se pudo iniciar la aplicación:", error);
-    process.exitCode = 1;
-});
+main();
